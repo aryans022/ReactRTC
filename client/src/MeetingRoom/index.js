@@ -10,12 +10,14 @@ export default function ControlButtons(props) {
   let [videoInSelected, setVideoInSelected] = useState('');
   let [audioOutSelected, setAudioOutSelected] = useState('');
   let [audio, setAudio] = useState(true);
-  let [video, setVideo] = useState(true);
+  let [video, setVideo] = useState(true);;
 
   const VideoRoom = () => {
 
     return (
       <Grid container>
+
+        {/*Display room if screen size biger than 600px*/}
         <Grid
           item
           style={false ? ({ width: `calc(${100}vw - ${300}px)` }) : ({ width: '100vw' })}
@@ -48,6 +50,8 @@ export default function ControlButtons(props) {
 
   return (
     <div>
+
+      {/*Display video room if the user has joined. Else show the waiting room*/}
       {joined ?
         <VideoRoom />
         :

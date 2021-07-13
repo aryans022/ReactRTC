@@ -2,6 +2,7 @@ import React, { useState } from "react";
 import { Button, Grid } from '@material-ui/core';
 import useStyles from './TeamCardStyles';
 
+//if the image is not found, generate a random image.
 const handleError = (props) => {
   const { errored, setErrored, setSrc } = props;
   if (!errored) {
@@ -31,12 +32,16 @@ const TeamCard = (props) => {
         direction="row"
         alignItems="center"
       >
+
+        {/*team image*/}
         <img
           src={src}
           alt='img'
           onError={() => handleError({ errored, setErrored, setSrc })}
           className={classes.teamImage}
         />
+
+        {/*team name*/}
         <div className={classes.teamName}>{teamName}</div>
       </Grid>
     </Button>

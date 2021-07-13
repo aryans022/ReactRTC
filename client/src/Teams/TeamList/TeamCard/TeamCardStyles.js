@@ -5,9 +5,9 @@ const TeamCardStyles = makeStyles({
     borderRadius: '50%',
     margin: '1em',
     height: '3em',
-    display:'none',
-    '@media(min-width: 1024px)' : {
-      display:'inline'
+    display: 'none',
+    '@media(min-width: 1024px)': {
+      display: 'inline'
     }
   },
   teamButton: {
@@ -27,7 +27,7 @@ const TeamCardStyles = makeStyles({
     overflowWrap: 'break-word',
     maxWidth: `100%`,
     margin: 'auto',
-    '@media(min-width: 1024px)' : {
+    '@media(min-width: 1024px)': {
       maxWidth: `calc(100% - ${5}em)`,
       margin: '0',
       textAlign: "left",

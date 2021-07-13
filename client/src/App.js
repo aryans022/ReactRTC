@@ -16,6 +16,7 @@ const App = () => {
 
   const classes = useStyles();
 
+  //all required routes that the site needs
   let routes = (
     <Switch>
       <Route path='/' exact component={Home} />

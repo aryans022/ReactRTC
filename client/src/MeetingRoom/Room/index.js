@@ -13,6 +13,7 @@ let teamId;
 
 class App extends React.Component {
 
+  //define state, refs and teamId
   constructor(props) {
     super(props);
     this.state = {
@@ -30,6 +31,7 @@ class App extends React.Component {
     teamId = window.location.pathname.substring(window.location.pathname.length - 8);
   }
 
+  //define socket events
   componentDidMount() {
 
     this.fetchUserMedia();
@@ -39,12 +41,12 @@ class App extends React.Component {
       peers.set(id, null);
     })
 
-    socket.on('joined', id => {
+    socket.on('joined', id => {                                 //begin webrtc connection
 
       peers.set(id, new RTCPeerConnection(iceServers));
       streams.set(id, new MediaStream());
 
-      peers.get(id).onicecandidate = (e) => {
+      peers.get(id).onicecandidate = (e) => {                   //add onicecandidate function
         if (e.candidate) {
           socket.emit('webrtc_ice_candidate', {
             label: e.candidate.sdpMLineIndex,
@@ -55,7 +57,7 @@ class App extends React.Component {
         }
       }
 
-      peers.get(id).ontrack = (e) => {                                      //add remote tracks to stream
+      peers.get(id).ontrack = (e) => {                          //add remote tracks to stream
         streams.get(id).addTrack(e.track);
 
         if ((!rem[0] || id === rem[0]) && this.rvid0.current) {
@@ -73,13 +75,13 @@ class App extends React.Component {
 
       }
 
-      if (this.state.stream) {
+      if (this.state.stream) {                                  //add local tracks to peerconnection
         this.state.stream.getTracks().forEach((track) => {
           peers.get(id).addTrack(track, streams.get(id))
         })
       }
 
-      if (id !== this.state.connID) {
+      if (id !== this.state.connID) {                           //create offer
         peers.get(id).createOffer()
           .then(sdp => {
             peers.get(id).setLocalDescription(sdp)
@@ -101,7 +103,7 @@ class App extends React.Component {
 
       peers.get(event.fromId).setRemoteDescription(new RTCSessionDescription(event.sdp))
 
-      peers.get(event.fromId).onicecandidate = (e) => {
+      peers.get(event.fromId).onicecandidate = (e) => {         //add onicecandidate function
         if (e.candidate) {
           socket.emit('webrtc_ice_candidate', {
             label: e.candidate.sdpMLineIndex,
@@ -112,7 +114,7 @@ class App extends React.Component {
         }
       }
 
-      peers.get(event.fromId).ontrack = (e) => {                                      //add remote tracks to stream
+      peers.get(event.fromId).ontrack = (e) => {                //add remote tracks to stream
         streams.get(event.fromId).addTrack(e.track);
 
         if ((!rem[0] || event.fromId === rem[0]) && this.rvid0.current) {
@@ -129,13 +131,13 @@ class App extends React.Component {
         }
       }
 
-      if (this.state.stream) {
+      if (this.state.stream) {                                  //add local track to peerconnection
         this.state.stream.getTracks().forEach((track) => {
           peers.get(event.fromId).addTrack(track, streams.get(event.fromId))
         })
       }
 
-      peers.get(event.fromId).createAnswer().then(sdp => {
+      peers.get(event.fromId).createAnswer().then(sdp => {      //create webrtc answer
         peers.get(event.fromId).setLocalDescription(sdp)
         socket.emit('webrtc_answer', {
           type: 'webrtc_answer',
@@ -163,7 +165,7 @@ class App extends React.Component {
     })
 
 
-    socket.on('remove', (id) => {              //handle disconnect
+    socket.on('remove', (id) => {                               //handle disconnect
 
       if (rem[0] === id && this.rvid0.current) {
         this.rvid0.current.srcObject = null;
@@ -184,12 +186,15 @@ class App extends React.Component {
 
   }
 
+  //toggle audio
   handleAudio() {
     if (this.state.stream && this.state.stream.getAudioTracks()[0]) {
       this.state.stream.getAudioTracks()[0].enabled = !(this.state.stream.getAudioTracks()[0].enabled)
       this.setState({ audio: !this.state.audio })
     }
   }
+
+  //toggle video
   handleVideo() {
     if (this.state.stream && this.state.stream.getVideoTracks()[0]) {
       this.state.stream.getVideoTracks()[0].enabled = !(this.state.stream.getVideoTracks()[0].enabled)
@@ -197,6 +202,7 @@ class App extends React.Component {
     }
   }
 
+  //stop stream on exit
   handleExit() {
     peers.forEach((value) => {
       if (value) {
@@ -211,12 +217,14 @@ class App extends React.Component {
     socket.emit('endCall');
   }
 
+  //toggle sharing
   handleSharing() {
     this.state.stream.getTracks().forEach(track => track.stop());
     this.state.sharing ? this.fetchUserMedia() : this.fetchDisplayMedia();
     this.setState({ sharing: !this.state.sharing });
   }
 
+  //utitlity function to get user display
   fetchDisplayMedia() {
     navigator.mediaDevices.getDisplayMedia({                     //get permission and add track
       audio: true,
@@ -230,7 +238,7 @@ class App extends React.Component {
         this.vid.current.srcObject = stream;
       streams.set(this.state.connID, stream);
       this.setState({ stream: stream });
-      socket.emit('join room1', window.location.pathname.substring(window.location.pathname.length-8));
+      socket.emit('join room1', window.location.pathname.substring(window.location.pathname.length - 8));
     }).catch((err) => {
       this.fetchUserMedia();
       this.setState({ sharing: false });
@@ -238,6 +246,7 @@ class App extends React.Component {
     })
   }
 
+  //utility function to get user cam and mic
   fetchUserMedia() {
     navigator.mediaDevices.getUserMedia({                     //get permission and add track
       audio: { deviceId: this.props.audioInSelected.deviceId },
@@ -249,7 +258,7 @@ class App extends React.Component {
       stream.getVideoTracks()[0].enabled = this.state.video;
       streams.set(this.state.connID, stream);
       this.setState({ stream: stream });
-      socket.emit('join room1', window.location.pathname.substring(window.location.pathname.length-8));
+      socket.emit('join room1', window.location.pathname.substring(window.location.pathname.length - 8));
     }).catch((err) => {
       console.log(err);
     })
@@ -260,76 +269,83 @@ class App extends React.Component {
     return (
 
       <Grid container className='roomRoot'>
-      {this.state.chat ?
-        (<Grid item>
-          <ChatRoom
-            team={{ teamId }}
-            style={{
-              width: '300px'
-            }}
-          />
-        </Grid>)
-        :
-        null
-      }
 
-      <Grid item style={this.state.chat?{width: 'calc(100vw - 300px)'} : {width: 'calc(100vw)'}}>
-      <div className='roomHolder'>
-        <div className='videoHolder'>
+        {/*display chat box*/}
+        {this.state.chat ?
+          (<Grid item>
+            <ChatRoom
+              team={{ teamId }}
+              style={{
+                width: '300px'
+              }}
+            />
+          </Grid>)
+          :
+          null
+        }
 
-          <Grid container className='videoRow'>
-            <Grid item className='videoBox'>
-              <video
-                autoPlay
-                muted
-                ref={this.vid}
-              />
-              <div style={{width:'10px'}}></div>
-            </Grid>
-            
-            <Grid item style={{width:'10px'}}></Grid>
-            
-            <Grid item className='videoBox'>
-              <video
-                autoPlay
-                ref={this.rvid0}
-              />
-            </Grid>
-          </Grid>
+        {/*main video area*/}
+        <Grid item style={this.state.chat ? { width: 'calc(100vw - 300px)' } : { width: 'calc(100vw)' }}>
+          <div className='roomHolder'>
 
-          <Grid container className='videoRow'>
-            <Grid item className='videoBox'>
-              <video
-                autoPlay
-                ref={this.rvid1}
-              />
-            </Grid>
-            
-            <Grid item style={{width:'10px'}}></Grid>
+            {/*display all 4 participant streams*/}
+            <div className='videoHolder'>
 
-            <Grid item className='videoBox'>
-              <video
-                autoPlay
-                ref={this.rvid2}
-              />
-            </Grid>
-          </Grid>
+              <Grid container className='videoRow'>
+                <Grid item className='videoBox'>
+                  <video
+                    autoPlay
+                    muted
+                    ref={this.vid}
+                  />
+                  <div style={{ width: '10px' }}></div>
+                </Grid>
 
-        </div>
+                <Grid item style={{ width: '10px' }}></Grid>
 
-        <ControlButtons
-          handleAudio={() => this.handleAudio()}
-          handleVideo={() => this.handleVideo()}
-          handleExit={() => this.handleExit()}
-          handleSharing={() => this.handleSharing()}
-          audio={(this.state.stream && this.state.stream.getAudioTracks()[0] && this.state.stream.getAudioTracks()[0].enabled)}
-          video={(this.state.stream && this.state.stream.getVideoTracks()[0] && this.state.stream.getVideoTracks()[0].enabled)}
-          sharing={this.state.sharing}
-          chat={this.state.chat}
-          handleChat={()=>this.setState({chat: !this.state.chat})}
-        />
-      </div>
-      </Grid>
+                <Grid item className='videoBox'>
+                  <video
+                    autoPlay
+                    ref={this.rvid0}
+                  />
+                </Grid>
+              </Grid>
+
+              <Grid container className='videoRow'>
+                <Grid item className='videoBox'>
+                  <video
+                    autoPlay
+                    ref={this.rvid1}
+                  />
+                </Grid>
+
+                <Grid item style={{ width: '10px' }}></Grid>
+
+                <Grid item className='videoBox'>
+                  <video
+                    autoPlay
+                    ref={this.rvid2}
+                  />
+                </Grid>
+              </Grid>
+
+            </div>
+
+
+            {/*display the toggle buttons for the user*/}
+            <ControlButtons
+              handleAudio={() => this.handleAudio()}
+              handleVideo={() => this.handleVideo()}
+              handleExit={() => this.handleExit()}
+              handleSharing={() => this.handleSharing()}
+              audio={(this.state.stream && this.state.stream.getAudioTracks()[0] && this.state.stream.getAudioTracks()[0].enabled)}
+              video={(this.state.stream && this.state.stream.getVideoTracks()[0] && this.state.stream.getVideoTracks()[0].enabled)}
+              sharing={this.state.sharing}
+              chat={this.state.chat}
+              handleChat={() => this.setState({ chat: !this.state.chat })}
+            />
+          </div>
+        </Grid>
       </Grid>
     )
   }

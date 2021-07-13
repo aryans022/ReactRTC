@@ -47,7 +47,7 @@ const ChatRoomStyles = makeStyles({
         border: 'none'
       }
     },
-    '@media(min-width: 600px)' : {
+    '@media(min-width: 600px)': {
       width: `calc(100% - ${11}em)`,
       height: '3em',
       margin: '1em',
@@ -69,7 +69,7 @@ const ChatRoomStyles = makeStyles({
     '&:hover': {
       background: 'rgb(26, 188, 156)'
     },
-    '@media(min-width: 600px)' : {
+    '@media(min-width: 600px)': {
       minWidth: '3em',
       maxWidth: '3em',
       height: '3em',
@@ -77,7 +77,7 @@ const ChatRoomStyles = makeStyles({
   },
   noMessage: {
     display: 'flex',
-    alignItems:'center',
+    alignItems: 'center',
     justifyContent: 'center',
     height: '100%'
   },

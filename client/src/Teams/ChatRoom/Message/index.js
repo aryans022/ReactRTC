@@ -14,6 +14,8 @@ const Message = (props) => {
   const displayImage = prev ? { visibility: 'hidden', height: '20px', width: '2.5em' } : null;
   const imageURL = photoURL ? photoURL : 'https://image.flaticon.com/icons/png/512/147/147144.png';
 
+  //sent message component
+  //styled according to the display location (in video room or outside room)
   const SentMessage = () => {
     return (< >
       {
@@ -45,6 +47,8 @@ const Message = (props) => {
     </>)
   }
 
+  //received message component
+  //styled according to the display location (in video room or outside room)
   const ReceivedMessage = () => {
     return (< >
       <div
@@ -77,6 +81,7 @@ const Message = (props) => {
     </>)
   }
 
+  //returns sent message if current user sent message, else returns received message component
   return (
     <Grid
       container

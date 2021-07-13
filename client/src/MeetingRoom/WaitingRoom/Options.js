@@ -12,11 +12,22 @@ export default function Options(props) {
 
   const classes = useStyles();
 
+  const getMenuItems = device => {
+    return <MenuItem
+      className={classes.menuLabel}
+      value={device}
+      key={device.deviceId}
+    >
+      {device.label}
+    </MenuItem>
+  }
+
   return (
 
     <Grid container direction='row' justify='center' alignItems='center' spacing={0} className={classes.root}>
       <Grid item align='center' xs={12}>
 
+        {/*Audio menu*/}
         <Select
           value={audioInSelected}
           onChange={event => {
@@ -27,19 +38,12 @@ export default function Options(props) {
           MenuProps={{ classes: { paper: classes.selectMenu } }}
         >
           {
-            audioIn.map(device => {
-              return <MenuItem
-                className={classes.menuLabel}
-                value={device}
-                key={device.deviceId}
-              >
-                {device.label}
-              </MenuItem>
-            })
+            audioIn.map(getMenuItems)
           }
         </Select>
       </Grid>
 
+      {/*Video input menu*/}
       <Grid item align='center' xs={12}>
         <Select
           value={videoInSelected}
@@ -51,19 +55,12 @@ export default function Options(props) {
           MenuProps={{ classes: { paper: classes.selectMenu } }}
         >
           {
-            videoIn.map(device => {
-              return <MenuItem
-                className={classes.menuLabel}
-                value={device}
-                key={device.deviceId}
-              >
-                {device.label}
-              </MenuItem>
-            })
+            videoIn.map(getMenuItems)
           }
         </Select>
       </Grid>
 
+      {/*audio output menu*/}
       <Grid item align='center' xs={12}>
         <Select
           value={audioOutSelected}
@@ -75,24 +72,19 @@ export default function Options(props) {
           MenuProps={{ classes: { paper: classes.selectMenu } }}
         >
           {
-            audioOut.map(device => {
-              return <MenuItem
-                className={classes.menuLabel}
-                value={device}
-                key={device.deviceId}
-              >
-                {device.label}
-              </MenuItem>
-            })
+            audioOut.map(device=>getMenuItems(device))
           }
         </Select>
       </Grid>
 
+      {/*toggle buttons*/}
       <Grid
         item
         align='center'
         className={classes.buttonHolder}
       >
+
+        {/*toggle audio*/}
         <Button
           variant='contained'
           color='primary'
@@ -102,7 +94,7 @@ export default function Options(props) {
           Toggle Audio
         </Button>
       </Grid>
-
+      {/*toggle joined*/}
       <Grid
         item
         align='center'
@@ -118,6 +110,7 @@ export default function Options(props) {
         </Button>
       </Grid>
 
+      {/*toggle video*/}
       <Grid
         item
         align='center'

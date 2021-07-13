@@ -22,6 +22,7 @@ const Teams = () => {
   const userRef = firestore.collection(`user`);
   const [userTeams] = useDocumentData(userRef.doc(user?.uid ? user?.uid : 'wrongpath'), { idField: 'id' })
 
+  /*return team's messages if a team is opened and the user is authenticated*/
   const MessageBox = () => {
     return (
       user && openedTeam ?
@@ -43,6 +44,7 @@ const Teams = () => {
       direction="row"
     >
 
+      {/*always show teamlist on big screens and on small screens if it is selected*/}
       {
         (showTeam || width > 600) ?
           <Grid item xs={12} sm={3}>
@@ -56,6 +58,7 @@ const Teams = () => {
           null
       }
 
+      {/*always show MessageBox on big screens and on small screens if it is selected*/}
       {
         (!showTeam || width > 600) ?
           <MessageBox />

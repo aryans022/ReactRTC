@@ -16,23 +16,23 @@ export default function EndCall() {
     >
       <center>
 
-        <Typography 
-        className = {classes.message}
-        variant='h5' 
+        <Typography
+          className={classes.message}
+          variant='h5'
         >
           You left the meeting
         </Typography>
 
-        <a href = '/teams' className={classes.link}>
+        <a href='/teams' className={classes.link}>
           <Button
-          className = {classes.homeButton}
-          variant='contained' 
-          color='primary'
-          > 
+            className={classes.homeButton}
+            variant='contained'
+            color='primary'
+          >
             Return to Teams Chat
           </Button>
         </a>
-        
+
       </center>
     </Grid>
   );

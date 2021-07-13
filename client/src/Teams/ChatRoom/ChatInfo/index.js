@@ -18,6 +18,7 @@ const ChatInfo = (props) => {
       alignItems='center'
       className={classes.root}
     >
+      {/*show the name if it is defined*/}
       {name ?
         <Grid
           item
@@ -29,10 +30,12 @@ const ChatInfo = (props) => {
         null
       }
 
+      {/*team code*/}
       <Grid item >
         Code: {code}
       </Grid>
 
+      {/*show the display teams button on small screens when not in video room*/}
       <Grid item className={classes.buttonHolder}>
         {(width < 600 && !inRoom) ? <Button
           color='primary'

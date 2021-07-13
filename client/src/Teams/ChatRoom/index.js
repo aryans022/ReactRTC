@@ -31,11 +31,13 @@ const ChatRoom = (props) => {
   const classes = useStyles();
   const history = useHistory();
 
+  //show alert in case of an error
   if (errorText) {
     alert(errorText.toLo);
     setErrorText(null);
   }
 
+  /*check if room is full before joining*/
   useEffect(() => {
 
     socket.on("wrong code", () => setErrorText("Team does not exist."))
@@ -48,6 +50,7 @@ const ChatRoom = (props) => {
 
   }, [history, team]);
 
+  //send message to the chat room
   const sendMessage = async () => {
 
     const { uid, photoURL, displayName } = auth.currentUser;
@@ -72,6 +75,7 @@ const ChatRoom = (props) => {
 
   }
 
+  //send message on pressing enter
   const handleKeyPress = (target) => {
     if (target.charCode === 13) {
       sendMessage();
@@ -90,6 +94,7 @@ const ChatRoom = (props) => {
       style={props.style}
     >
 
+      {/*team name and code toolbar*/}
       <ChatInfo
         name={team.name || null}
         code={team.teamId || 'not found'}
@@ -97,26 +102,33 @@ const ChatRoom = (props) => {
         setTeam={setShowTeam}
       />
 
+      {/*show all messages as received from the db*/}
       <div className={classes.messageHolder} style={inRoom ? { margin: '0px' } : null}>
+
+        {/*mapping individual messages*/}
         {messages?.map(msg => {
           let flag = prev === msg.uid
           prev = msg.uid
           return (
-          <Message
-            key={msg.id}
-            message={msg}
-            inRoom={inRoom}
-            prev={flag}
-          />)
+            <Message
+              key={msg.id}
+              message={msg}
+              inRoom={inRoom}
+              prev={flag}
+            />)
         })}
+
+        {/*text to show if no messages are found*/}
         {messages?.length === 0 ?
           <div className={classes.noMessage}>
             No messages till now
           </div>
           : null}
         <div ref={scroller}></div>
+
       </div>
 
+      {/*textbox footer*/}
       <Grid
         item
         xs={12}
@@ -128,6 +140,7 @@ const ChatRoom = (props) => {
           justify='center'
           alignItems='center'
         >
+          {/*show textbox and style according to where it is being displayed*/}
           <TextField
             variant='outlined'
             value={currentMessage}
@@ -139,6 +152,8 @@ const ChatRoom = (props) => {
               className: classes.input,
             }}
           />
+
+          {/*send message button*/}
           <Button
             color='primary'
             variant='contained'
@@ -147,6 +162,8 @@ const ChatRoom = (props) => {
           >
             <SendIcon className={classes.icon} />
           </Button>
+
+          {/*join video button if the person isn't currently in the room*/}
           {!inRoom ? <Button
             color='primary'
             variant='contained'

@@ -18,30 +18,32 @@ export default function Navbar() {
     <AppBar position="sticky" className={classes.bg}>
       <Toolbar className={classes.toolbar}>
 
-      <Button
+        {/*website title and logo*/}
+        <Button
           onClick={() => history.push('/')}
           className={classes.logoButton}
         >
-        <img src={logo} className={classes.logo} alt={'logo'}/>
-        <Typography variant="h6" noWrap className={classes.logoText}>
-          ReactRTC
-        </Typography>
+          <img src={logo} className={classes.logo} alt={'logo'} />
+          <Typography variant="h6" noWrap className={classes.logoText}>
+            ReactRTC
+          </Typography>
         </Button>
 
+        {/*sign out button if the user is logged in*/}
         {user ?
-        <Button
-          color='primary'
-          variant='contained'
-          onClick={() => {
-            auth.signOut().then(() => {
-              history.push('/');
-            })
-          }}
-          className={classes.signOutButton}
-        >
-          Sign Out
-        </Button>
-        :null
+          <Button
+            color='primary'
+            variant='contained'
+            onClick={() => {
+              auth.signOut().then(() => {
+                history.push('/');
+              })
+            }}
+            className={classes.signOutButton}
+          >
+            Sign Out
+          </Button>
+          : null
         }
 
       </Toolbar>

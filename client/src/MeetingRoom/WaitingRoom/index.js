@@ -23,6 +23,7 @@ class WaitingRoom extends React.Component {
 
   componentDidMount() {
 
+    /*get user device list*/
     navigator.mediaDevices.enumerateDevices().then(devices => {
 
       let { audioIn, videoIn, audioOut } = this.state;
@@ -53,6 +54,7 @@ class WaitingRoom extends React.Component {
     });
   }
 
+  /*handle Input Device Change*/
   handleInputChange(audioInSelected, videoInSelected) {
 
     const { audio, video, setAudioInSelected, setVideoInSelected } = this.props;
@@ -74,6 +76,7 @@ class WaitingRoom extends React.Component {
 
   }
 
+  /*toggle audio*/
   handleAudioChange() {
     let { audio, setAudio } = this.props;
     if (this.state.stream) {
@@ -81,6 +84,8 @@ class WaitingRoom extends React.Component {
       setAudio(!audio);
     }
   }
+
+  /*toggle video*/
   handleVideoChange() {
     let { video, setVideo } = this.props;
     if (this.state.stream) {
@@ -88,6 +93,8 @@ class WaitingRoom extends React.Component {
       setVideo(!video);
     }
   }
+
+  /*toggle joined*/
   handleJoin() {
     let { setJoined } = this.props;
     if (this.state.stream) {
@@ -107,6 +114,8 @@ class WaitingRoom extends React.Component {
     return (
       <div>
         <Grid container justify="center">
+
+          {/*preview video*/}
           <Grid item md={12} align='center'>
             <video
               autoPlay
@@ -118,6 +127,7 @@ class WaitingRoom extends React.Component {
             />
           </Grid>
 
+          {/*options that the user can select*/}
           <Grid item md={12}>
             <Options
               handleInputChange={(currentAudio, currentVideo) => this.handleInputChange(currentAudio, currentVideo)}

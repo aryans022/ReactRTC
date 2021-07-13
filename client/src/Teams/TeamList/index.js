@@ -21,6 +21,7 @@ const TeamList = (props) => {
   const teamRef = firestore.collection(`teams`);
   const [allTeams] = useCollectionData(teamRef, { idField: 'id' });
 
+  //handle team join request
   const joinTeamHandler = async () => {
 
     let name = null, photoId = null, check = joinTeam.trim().toLowerCase();
@@ -61,6 +62,7 @@ const TeamList = (props) => {
 
   }
 
+  //handle team creation request
   const createTeamHandler = async () => {
 
     let teamName = createText.trim().substring(0, 30);
@@ -112,6 +114,8 @@ const TeamList = (props) => {
         alignContent="flex-start"
         className={classes.root}
       >
+
+        {/*Show all user team cards from the teams array received from the db*/}
         {teams?.teams?.map((team, i) => (
           <Grid item xs={12} key={`teamGrid${i}`}>
             <TeamCard
@@ -124,10 +128,12 @@ const TeamList = (props) => {
             />
           </Grid>
         ))}
+
+        {/*Message if the user has not joined any teams*/}
         {
           !teams?.teams?.length ?
             <Grid item xs={12} align='center'
-              style={{ display: "flex", alignItems: "center", height:'100%' }}>
+              style={{ display: "flex", alignItems: "center", height: '100%' }}>
               <p style={{ margin: 'auto' }}>
                 Join a team with a code, or create a new team and invite your friends
               </p>
@@ -136,6 +142,8 @@ const TeamList = (props) => {
         }
         <div ref={scroller}></div>
       </Grid>
+
+      {/* team join and create buttons*/}
       <Grid
         container
         direction="row"
@@ -143,6 +151,8 @@ const TeamList = (props) => {
         alignItems="center"
         className={classes.controlButtons}
       >
+
+        {/*join team button*/}
         <Grid item xs={6} align='center'>
           <Button
             className={classes.buttons}
@@ -153,6 +163,8 @@ const TeamList = (props) => {
             Join Team
           </Button>
         </Grid>
+
+        {/*create team button*/}
         <Grid item xs={6} align='center'>
           <Button
             className={classes.buttons}
