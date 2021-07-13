@@ -1,0 +1,38 @@
+.roomRoot {
+  text-align: center;
+  height: calc(100vh - 60px);
+  width: 100%;
+}
+
+.roomHolder {
+  text-align: center;
+  height: calc(100vh - 60px);
+  width: 100%;
+}
+
+.videoHolder {
+  text-align: center;
+  height: calc(100vh - 60px);
+  width: 100%;
+}
+
+video {
+  max-width: 100%;
+  height: auto;
+  max-height: 100%;
+  border-radius: 20px;
+}
+
+.videoRow {
+  position: relative;
+  top: 0px;
+  margin: 10px;
+}
+
+.videoBox {
+  min-height: calc(50vh - 45px);
+  max-height: calc(50vh - 45px);
+  border: 5px solid rgb(30, 30, 30);
+  border-radius: 20px;
+  width: calc(50% - 15px)
+}

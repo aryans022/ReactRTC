@@ -1,0 +1,14 @@
+
+      <TextField
+        label="Enter Team Code"
+        variant="outlined"
+        value={joinTeam}
+        onChange={(event) => setJoinTeam(event.target.value)}
+      />
+      <Button
+        color='primary'
+        variant='contained'
+        onClick={joinTeamHandler}
+      >
+        Join Team
+      </Button>
