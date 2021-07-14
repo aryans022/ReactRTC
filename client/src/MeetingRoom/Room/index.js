@@ -62,14 +62,17 @@ class App extends React.Component {
 
         if ((!rem[0] || id === rem[0]) && this.rvid0.current) {
           this.rvid0.current.srcObject = streams.get(id);
+          this.attachSinkId(this.rvid0.current);
           rem[0] = id;
         }
         else if ((!rem[1] || id === rem[1]) && this.rvid1.current) {
           this.rvid1.current.srcObject = streams.get(id);
+          this.attachSinkId(this.rvid1.current);
           rem[1] = id;
         }
         else if ((!rem[2] || id === rem[2]) && this.rvid2.current) {
           this.rvid2.current.srcObject = streams.get(id);
+          this.attachSinkId(this.rvid2.current);
           rem[2] = id;
         }
 
@@ -91,6 +94,9 @@ class App extends React.Component {
               toId: id,
               fromId: this.state.connID
             })
+          })
+          .catch(err => {
+            console.log(err);
           })
       }
 
@@ -119,14 +125,17 @@ class App extends React.Component {
 
         if ((!rem[0] || event.fromId === rem[0]) && this.rvid0.current) {
           this.rvid0.current.srcObject = streams.get(event.fromId);
+          this.attachSinkId(this.rvid0.current);
           rem[0] = event.fromId;
         }
         else if ((!rem[1] || event.fromId === rem[1]) && this.rvid1.current) {
           this.rvid1.current.srcObject = streams.get(event.fromId);
+          this.attachSinkId(this.rvid1.current);
           rem[1] = event.fromId;
         }
         else if ((!rem[2] || event.fromId === rem[2]) && this.rvid2.current) {
           this.rvid2.current.srcObject = streams.get(event.fromId);
+          this.attachSinkId(this.rvid2.current);
           rem[2] = event.fromId;
         }
       }
@@ -146,6 +155,9 @@ class App extends React.Component {
           toId: event.fromId
         })
       })
+        .catch(err => {
+          console.log(err);
+        })
 
     })
 
@@ -224,26 +236,43 @@ class App extends React.Component {
     this.setState({ sharing: !this.state.sharing });
   }
 
+
+  // Attach audio output device to video element using device/sink ID.
+  attachSinkId(videoRef) {
+    let sinkId = this.props.audioOutSelected?.deviceId;
+    if (videoRef.sinkId !== undefined && sinkId) {
+      videoRef.setSinkId(sinkId)
+        .then(() => { })
+        .catch(() => { })
+    }
+  }
+
   //utitlity function to get user display
   fetchDisplayMedia() {
     navigator.mediaDevices.getDisplayMedia({                     //get permission and add track
       audio: true,
       video: true
-    }).then(stream => {
-      stream.getVideoTracks()[0].onended = () => {
-        this.fetchUserMedia();
-      }
-      this.setState({ sharing: !this.state.sharing });
-      if (this.vid.current)
-        this.vid.current.srcObject = stream;
-      streams.set(this.state.connID, stream);
-      this.setState({ stream: stream });
-      socket.emit('join room1', window.location.pathname.substring(window.location.pathname.length - 8));
-    }).catch((err) => {
-      this.fetchUserMedia();
-      this.setState({ sharing: false });
-      console.log(err);
     })
+      .then(stream => {
+        stream.getVideoTracks()[0].onended = () => {
+          this.fetchUserMedia();
+        }
+        this.setState({ sharing: !this.state.sharing });
+        if (this.vid.current) {
+          this.vid.current.srcObject = stream;
+          this.attachSinkId(this.vid.current);
+        }
+        streams.set(this.state.connID, stream);
+        this.setState({ stream: stream });
+        socket.emit('join room1', window.location.pathname.substring(window.location.pathname.length - 8));
+      }).catch((err) => {
+        this.fetchUserMedia();
+        this.setState({ sharing: false });
+        console.log(err);
+      })
+      .catch(err => {
+        console.log(err);
+      })
   }
 
   //utility function to get user cam and mic
@@ -251,17 +280,21 @@ class App extends React.Component {
     navigator.mediaDevices.getUserMedia({                     //get permission and add track
       audio: { deviceId: this.props.audioInSelected.deviceId },
       video: { deviceId: this.props.videoInSelected.deviceId }
-    }).then(stream => {
-      if (this.vid.current)
-        this.vid.current.srcObject = stream;
-      stream.getAudioTracks()[0].enabled = this.state.audio;
-      stream.getVideoTracks()[0].enabled = this.state.video;
-      streams.set(this.state.connID, stream);
-      this.setState({ stream: stream });
-      socket.emit('join room1', window.location.pathname.substring(window.location.pathname.length - 8));
-    }).catch((err) => {
-      console.log(err);
     })
+      .then(stream => {
+        if (this.vid.current) {
+          this.vid.current.srcObject = stream;
+          this.attachSinkId(this.vid.current);
+        }
+        stream.getAudioTracks()[0].enabled = this.state.audio;
+        stream.getVideoTracks()[0].enabled = this.state.video;
+        streams.set(this.state.connID, stream);
+        this.setState({ stream: stream });
+        socket.emit('join room1', window.location.pathname.substring(window.location.pathname.length - 8));
+      })
+      .catch((err) => {
+        console.log(err);
+      })
   }
 
   render() {

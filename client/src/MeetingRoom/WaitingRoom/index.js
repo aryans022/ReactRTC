@@ -23,35 +23,48 @@ class WaitingRoom extends React.Component {
 
   componentDidMount() {
 
-    /*get user device list*/
-    navigator.mediaDevices.enumerateDevices().then(devices => {
+    const { audio, video } = this.props;
+    navigator.mediaDevices.getUserMedia({    //get user media with default device
+      audio: true,
+      video: true
+    })
+      .then(stream => {
+        this.vid.current.srcObject = stream;
+        this.setState({ stream: stream });
+        this.state.stream.getVideoTracks()[0].enabled = video;
+        this.state.stream.getAudioTracks()[0].enabled = audio;
 
-      let { audioIn, videoIn, audioOut } = this.state;
-      let audioInSelected, videoInSelected, audioOutSelected
-      let { setAudioInSelected, setVideoInSelected, setAudioOutSelected } = this.props;
-      devices.forEach(device => {
-        if (device.kind === 'audioinput') {
-          audioIn.push(device);
-        }
-        else if (device.kind === 'videoinput') {
-          videoIn.push(device);
-        }
-        else if (device.kind === 'audiooutput') {
-          audioOut.push(device);
-        }
+        /*get user device list*/
+        navigator.mediaDevices.enumerateDevices().then(devices => {
+
+          let { audioIn, videoIn, audioOut } = this.state;
+          let audioInSelected, videoInSelected, audioOutSelected
+          let { setAudioInSelected, setVideoInSelected, setAudioOutSelected } = this.props;
+          devices.forEach(device => {
+            if (device.kind === 'audioinput') {
+              audioIn.push(device);
+            }
+            else if (device.kind === 'videoinput') {
+              videoIn.push(device);
+            }
+            else if (device.kind === 'audiooutput') {
+              audioOut.push(device);
+            }
+          })
+          audioInSelected = audioIn[0];
+          videoInSelected = videoIn[0];
+          audioOutSelected = audioOut[0];
+
+          this.handleInputChange(audioInSelected, videoInSelected);
+
+          setAudioInSelected(audioInSelected);
+          setVideoInSelected(videoInSelected);
+          setAudioOutSelected(audioOutSelected);
+          this.setState({ audioIn, videoIn, audioOut });
+
+        })
+          .catch((err) => console.log(err));
       })
-      audioInSelected = audioIn[0];
-      videoInSelected = videoIn[0];
-      audioOutSelected = audioOut[0];
-
-      this.handleInputChange(audioInSelected, videoInSelected);
-
-      setAudioInSelected(audioInSelected);
-      setVideoInSelected(videoInSelected);
-      setAudioOutSelected(audioOutSelected);
-      this.setState({ audioIn, videoIn, audioOut });
-
-    });
   }
 
   /*handle Input Device Change*/
@@ -69,6 +82,9 @@ class WaitingRoom extends React.Component {
         this.setState({ stream: stream });
         this.state.stream.getVideoTracks()[0].enabled = video;
         this.state.stream.getAudioTracks()[0].enabled = audio;
+      })
+      .catch(err=>{
+        console.log(err);
       })
 
     setAudioInSelected(audioInSelected)
@@ -106,6 +122,28 @@ class WaitingRoom extends React.Component {
     }
   }
 
+  /*handle Output Device Change*/
+  handleOutputChange(audioOutSelected) {
+    const { setAudioOutSelected } = this.props;
+    this.attachSinkId(audioOutSelected.deviceId);
+    setAudioOutSelected(audioOutSelected);
+  }
+
+  // Attach audio output device to video element using device/sink ID.
+  attachSinkId(sinkId) {
+    if (this.vid.current.sinkId !== undefined) {
+      this.vid.current.setSinkId(sinkId)
+        .then(() => {
+          console.log(`Success, audio output device attached: ${sinkId}`);
+        })
+        .catch(err=>{
+          console.log(err);
+        })
+    } else {
+      console.warn('Browser does not support output device selection.');
+    }
+  }
+
   render() {
 
     let { audioIn, videoIn, audioOut } = this.state;
@@ -122,7 +160,7 @@ class WaitingRoom extends React.Component {
               ref={this.vid}
               style={{
                 height: '250px',
-                margin: '2em 0 0.5em 0'
+                margin: '1em 0 0.5em 0'
               }}
             />
           </Grid>
@@ -133,6 +171,7 @@ class WaitingRoom extends React.Component {
               handleInputChange={(currentAudio, currentVideo) => this.handleInputChange(currentAudio, currentVideo)}
               handleAudioChange={() => this.handleAudioChange()}
               handleVideoChange={() => this.handleVideoChange()}
+              handleOutputChange={(currentAudio) => this.handleOutputChange(currentAudio)}
               handleJoin={() => this.handleJoin()}
               audioInSelected={audioInSelected}
               videoInSelected={videoInSelected}

@@ -9,7 +9,7 @@ export default function ControlButtons(props) {
   let [audioInSelected, setAudioInSelected] = useState('');
   let [videoInSelected, setVideoInSelected] = useState('');
   let [audioOutSelected, setAudioOutSelected] = useState('');
-  let [audio, setAudio] = useState(true);
+  let [audio, setAudio] = useState(false);
   let [video, setVideo] = useState(true);;
 
   const VideoRoom = () => {

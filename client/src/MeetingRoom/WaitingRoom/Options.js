@@ -5,9 +5,10 @@ import useStyles from './OptionsStyles';
 export default function Options(props) {
 
   let {
-    handleInputChange, handleAudioChange, handleVideoChange,
-    audioInSelected, videoInSelected, audioOutSelected,
-    audioIn, videoIn, audioOut, audio, video, handleJoin
+    handleInputChange, handleOutputChange, handleAudioChange,
+    handleVideoChange, audioInSelected, videoInSelected, 
+    audioOutSelected, audioIn, videoIn, audioOut, audio, 
+    video, handleJoin
   } = props
 
   const classes = useStyles();
@@ -21,13 +22,14 @@ export default function Options(props) {
       {device.label}
     </MenuItem>
   }
-
+  
   return (
 
     <Grid container direction='row' justify='center' alignItems='center' spacing={0} className={classes.root}>
-      <Grid item align='center' xs={12}>
 
-        {/*Audio menu*/}
+
+      {/*Audio menu*/}
+      <Grid item align='center' xs={12}>
         <Select
           value={audioInSelected}
           onChange={event => {
@@ -36,6 +38,11 @@ export default function Options(props) {
           }}
           className={classes.selectBox}
           MenuProps={{ classes: { paper: classes.selectMenu } }}
+          style={                                           //check for no devices found
+            (audioIn.length === 0 || audioIn[0] === "") ?
+              { display: 'none' }
+              : null
+          }
         >
           {
             audioIn.map(getMenuItems)
@@ -53,6 +60,11 @@ export default function Options(props) {
           }}
           className={classes.selectBox}
           MenuProps={{ classes: { paper: classes.selectMenu } }}
+          style={                                           //check for no devices found
+            (videoIn.length === 0 || videoIn[0] === "") ?
+              { display: 'none' }
+              : null
+          }
         >
           {
             videoIn.map(getMenuItems)
@@ -66,13 +78,18 @@ export default function Options(props) {
           value={audioOutSelected}
           onChange={event => {
             audioOutSelected = event.target.value;
-            handleInputChange(audioInSelected, videoInSelected);
+            handleOutputChange(audioOutSelected);
           }}
           className={classes.selectBox}
           MenuProps={{ classes: { paper: classes.selectMenu } }}
+          style={                                           //check for no devices found
+            (audioOut.length === 0 || audioOut[0] === "") ?
+              { display: 'none' }
+              : null
+          }
         >
           {
-            audioOut.map(device=>getMenuItems(device))
+            audioOut.map(device => getMenuItems(device))
           }
         </Select>
       </Grid>
@@ -125,6 +142,11 @@ export default function Options(props) {
           Toggle Video
         </Button>
       </Grid>
+
+      <Grid item align='center' xs={12}>
+        Earphones or headphones are recommended to avoid feedback while testing audio input/output.
+      </Grid>
+
     </Grid>
   );
 }
