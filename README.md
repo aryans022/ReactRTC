@@ -40,3 +40,14 @@ Contents
     + `$ cd client`
     + `$ npm install`
     + `$ npm start`
+
+
+### Choice of Technologies
+---
+
+1. ReactJS: I chose React as my frontend framework mostly because of component reusability and high community support. This has resulted in minimal repetition of code.
+2. Firebase: I considered mongoDB and SQL for my database, but firebase provided a simple frontend based solution that was perfect for my use case and the allotted time. I would have had to write the server side code for the other two dbs while that’s not the case for firebase.
+3. WebRTC and socket.io : I chose these to implement the video chat feature since these are the most basic tools for video conferencing on which most major SDKs/apps are built. This would result in much higher learning.
+4. MaterialUI: Built purely for React, unlike bootstrap.
+5. ExpressJS: Easy to configure and use with react and socket.io
+
