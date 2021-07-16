@@ -2,6 +2,7 @@
 
 `ReactRTC` is a live chat web application with support for both text messages and video call facilities. The app has been built using ReactJS, ExpressJS, WebRTC, Socket.io, Firebase, Azure Communication Services and MaterialUI.
 
+Please don't try to establish a connection over wifi and a mobile network. Sometimes, the firewall blocks the webRTC UDP connection to be made. Also, the site might be a bit slow to load when you load it the first time since it is hosted on heroku.
 Hosted at https://reactrtc.herokuapp.com/
 Video demo at https://vimeo.com/574529384
 
